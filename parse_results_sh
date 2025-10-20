@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+OUTDIR="${1:-outputs}"
+mkdir -p "$OUTDIR/parsed"
+
+echo "Parsing reflect_results"
+if [ -f "$OUTDIR/reflect_results/found.txt" ]; then
+  cp "$OUTDIR/reflect_results/found.txt" "$OUTDIR/parsed/reflected_list.txt"
+else
+  echo "No reflected results found" > "$OUTDIR/parsed/reflected_list.txt"
+fi
+
+echo " Parsing dalfox outputs for XSS indications"
+grep -RIn "XSS" "$OUTDIR/dalfox" -nH || true > "$OUTDIR/parsed/dalfox_findings.txt" || true
+
+echo " Searching saved pages for marker tokens"
+grep -RIn "XSS_TEST_123" "$OUTDIR" -nH || true > "$OUTDIR/parsed/marker_locations.txt" || true
+
+echo "Extracting server-side error tokens (<script>, onerror, svg/onload)"
+grep -RInE "<script|onerror|svg/onload" "$OUTDIR" -nH || true > "$OUTDIR/parsed/injection_tokens.txt" || true
+
+echo "Parsing complete. Parsed files in $OUTDIR/parsed/"
+ls -l "$OUTDIR/parsed" || true

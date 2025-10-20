@@ -1,0 +1,8 @@
+# External tools (install via OS package manager or go)
+dalfox (Go) - https://github.com/hahwul/dalfox
+hakrawler (Go) - https://github.com/hakluke/hakrawler
+gau (Go) - https://github.com/lc/gau
+curl
+jq
+gobuster
+# Optionally Burp Suite or OWASP ZAP for proxying & manual verification
